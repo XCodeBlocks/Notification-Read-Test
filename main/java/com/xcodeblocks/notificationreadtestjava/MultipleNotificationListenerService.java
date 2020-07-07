@@ -58,6 +58,9 @@ public class MultipleNotificationListenerService extends NotificationListenerSer
             Log.i("NotificationListener", "[alert] Text:" + text);
             Log.i("NotificationListener", "[alert] Sub Text:" + subText);
 
+
+            sendMessage(title, text, subText);      //(브로드캐스트 보내기)
+
             //(실제로 화면에 출력하기 위해 textView로 내용 출력):
 /*
             TextView notificationContent = findViewById(R.id.notificationContent);
@@ -77,11 +80,11 @@ public class MultipleNotificationListenerService extends NotificationListenerSer
 
     //"custom-event-name"라고 된 이름의 액션을 포함하는 인텐트를 보낸다.
     //-> 메인 액티비티 쪽에서 받게 된다.
-    private void sendMessage() {
+    private void sendMessage(String title, CharSequence text, CharSequence subtext) {
         Log.d("sender", "Broadcasting message");
         Intent intent = new Intent("custom-event-name");
         // You can also include some extra data.
-        intent.putExtra("message", "This is my message!");
+        intent.putExtra("message", "");
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 

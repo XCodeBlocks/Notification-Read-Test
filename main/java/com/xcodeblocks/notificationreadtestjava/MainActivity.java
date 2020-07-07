@@ -8,14 +8,19 @@ import android.content.Intent;
 //import android.support.v4.app.NotificationManagerCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import android.util.Log;
+import android.widget.TextView;
+
 //(아래 리스너 서비스 클래스에서 필요)
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.text.TextUtils;
-import android.util.Log;
-import android.widget.TextView;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import android.content.IntentFilter;
 
 import java.util.Set;
 
@@ -54,10 +59,43 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         }
-
         return false;
     }
 
-//(리스너 서비스)
+//(브로드캐스트 받는 리시버 관련)
+
+    //(인텐트(intent) 수신 관련)
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        //cf: https://goodtogreate.tistory.com/entry/Activity와-Service간의-통신
+        // action 이름이 "custom-event-name"으로 정의된 intent를 수신한다.
+        // observer의 이름은 mMessageReceiver이다.
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+                mMessageReceiver, new IntentFilter("custom-event-name"));
+    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // 등록을 해제한다.
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(
+                mMessageReceiver);
+    }
+
+    // 수신된 인텐트를 처리하는 핸들러
+    // "custom-event-name"라는 이름의 액션이 브로드캐스트 되면 이게 호출된다.
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Intent에 있는 추가 정보를 가져온다.
+            String message = intent.getStringExtra("message");
+            Log.d("receiver", "Got message: " + message);
+
+            //(TextView에 실제 텍스트로 출력)
+            TextView notificationContent = (TextView)findViewById(R.id.notificationContent);
+            notificationContent.setText("Got message: " + message);
+        }
+    };
 
 }
