@@ -119,9 +119,12 @@ class MainActivity : AppCompatActivity() {
                 subcontent: $subcontent
                 """.trimIndent()
 */
-            if (hasMatch_carrier)     //(알림에서 배송사가 감지되면)
-            {
-                val notificationContent = findViewById<View>(R.id.notificationContent) as TextView
+            
+            val notificationContent = findViewById<View>(R.id.notificationContent) as TextView
+            
+            if ( !hasMatch_carrier )                            //(매칭되는 배송사 없으면 내용 지우기)
+                notificationContent.text = """no match!"""
+            else {                                              //(알림에서 배송사가 감지되면)
             //(전체 알림 내용 출력: DEBUG)
                 notificationContent.text = """
                 Alert Received:
@@ -142,12 +145,6 @@ class MainActivity : AppCompatActivity() {
                     //matched_number = matchResult_Number?.value?.replaceAll("_", "")    //(TODO: replaceAll() 함수 사용 불가?!)
                     matched_number = matchResult_Number?.value?.replace("_", "")?.replace("_", "")
 
-                //[정보 출력]
-                    notificationContent.text = """
-                    Carrier Information:
-                    배송사: $matched_carrier
-                    운송장번호: $matched_number
-                """.trimIndent()
                 }
                 else if (matched_carrier == "우체국")    //(CJ대한통운인 경우)
                 {
@@ -155,18 +152,16 @@ class MainActivity : AppCompatActivity() {
                     //[운송장번호 찾기]
                     var matchResult_Number : MatchResult? = regex_number.find(content)
                     matched_number = matchResult_Number?.value?.replace("_", "")?.replace("_", "")
+                }
 
-                //[정보 출력]
-                    notificationContent.text = """
+            //[정보 출력]
+                notificationContent.text = """
                     Carrier Information:
                     배송사: $matched_carrier
                     운송장번호: $matched_number
                 """.trimIndent()
-                }
-                else {notificationContent.text = """no match!"""}       //(매칭되는 배송사 없으면 내용 지우기)
-
-
             }
+
         }
     }
 }
