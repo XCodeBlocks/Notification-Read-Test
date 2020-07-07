@@ -8,10 +8,11 @@ import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
 import android.text.TextUtils;
+import android.widget.TextView;
+
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 
-//public class MultipleNotificationListenerService extends NotificationListenerService
-/*
 public class MultipleNotificationListenerService extends NotificationListenerService {
 
     @Override
@@ -36,10 +37,10 @@ public class MultipleNotificationListenerService extends NotificationListenerSer
     public void onNotificationPosted(StatusBarNotification sbn) {
 
         final String packageName = sbn.getPackageName();
-    //(sbn으로 오는 알림을 가지고 처리)
-        //(확인한 알림이 원하는 패키지일때: 여기서는 pushbullet 앱 또는 Battery History 앱)
+        //(sbn으로 오는 알림을 가지고 처리)
+        //(확인한 알림이 원하는 패키지일때: 여기서는 카카오톡 앱 (또는 구글 메세지 앱) 또는 pushbullet 앱)
         if ( !TextUtils.isEmpty(packageName) &&
-                ( packageName.equals("com.pushbullet.android") || packageName.equals("com.psw.batteryToast") ) )
+                ( packageName.equals("com.kakao.talk") || packageName.equals("com.google.android.apps.messaging") || packageName.equals("com.pushbullet.android") ) )
         {
             Log.i("NotificationListener", "[alert] onNotificationPosted() - " + sbn.toString());
             Log.i("NotificationListener", "[alert] PackageName:" + sbn.getPackageName());
@@ -56,13 +57,32 @@ public class MultipleNotificationListenerService extends NotificationListenerSer
             Log.i("NotificationListener", "[alert] Title:" + title);
             Log.i("NotificationListener", "[alert] Text:" + text);
             Log.i("NotificationListener", "[alert] Sub Text:" + subText);
+
+            //(실제로 화면에 출력하기 위해 textView로 내용 출력):
+/*
+            TextView notificationContent = findViewById(R.id.notificationContent);
+            notificationContent.setText( "[alert] PackageName:" + sbn.getPackageName() + "\n"
+                    + "[alert] PostTime:" + sbn.getPostTime() + "\n"
+                    + "[alert] Title:" + title + "\n"
+                    + "[alert] Text:" + text + "\n"
+                    + "[alert] Sub Text:" + subText );
+*/
         }
     }
-
     @Override
     public void onNotificationRemoved(StatusBarNotification sbn) {
         Log.i("NotificationListener", "[alert] onNotificationRemoved() - " + sbn.toString());
     }
 
+
+    //"custom-event-name"라고 된 이름의 액션을 포함하는 인텐트를 보낸다.
+    //-> 메인 액티비티 쪽에서 받게 된다.
+    private void sendMessage() {
+        Log.d("sender", "Broadcasting message");
+        Intent intent = new Intent("custom-event-name");
+        // You can also include some extra data.
+        intent.putExtra("message", "This is my message!");
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+    }
+
 }
-*/
