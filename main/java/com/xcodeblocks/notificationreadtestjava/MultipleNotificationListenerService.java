@@ -10,6 +10,8 @@ import android.util.Log;
 import android.text.TextUtils;
 
 
+//public class MultipleNotificationListenerService extends NotificationListenerService
+/*
 public class MultipleNotificationListenerService extends NotificationListenerService {
 
     @Override
@@ -63,3 +65,4 @@ public class MultipleNotificationListenerService extends NotificationListenerSer
     }
 
 }
+*/
